@@ -9,7 +9,7 @@
 --  --------
 --  This script is a ground-up rewrite of the "smart charge" concept.
 --  Every design decision targets the specific quirks of the WotLK 3.3.5a
---  TrinityCore server build combined with the Eluna Lua engine.
+--  Server build combined with the Eluna Lua engine.
 --
 --  KEY DESIGN GOALS
 --  ----------------
@@ -257,7 +257,7 @@ end
 
 -- =============================================================================
 --  §3  SPEED MANAGEMENT
---  TrinityCore/Eluna stores several speed types.  We must save and restore
+--  Eluna stores several speed types.  We must save and restore
 --  ALL of them, because calling SetSpeed on RUN while swim-speed is custom will
 --  silently reset swim-speed to base in some build revisions.
 -- =============================================================================
@@ -324,7 +324,7 @@ local function IsVoidPoint(x, y, z)
 end
 
 --- Attempt to get the floor Z at (x, y) using the map's height lookup.
---  TrinityCore exposes this through the Map object reachable from the player.
+--  Core exposes this through the Map object reachable from the player.
 --  Returns (floorZ, success).
 local function GetFloorZ(player, x, y, z)
     -- GetMap():GetHeight(x, y, z) is the preferred TC/Eluna call.
@@ -812,7 +812,7 @@ end
 --  We wrap player:MoveTo() with multiple safety layers.
 -- =============================================================================
 
---- Issue the actual movement order to TrinityCore via Eluna.
+--- Issue the actual movement order to Core via Eluna.
 --  Returns true if movement was issued successfully.
 local function IssueMovement(player, state)
     local dx, dy, dz = state.destX, state.destY, state.destZ
@@ -870,7 +870,7 @@ end
 --  A rough heuristic – real MMaps will catch most of these, but we add
 --  an extra layer for coordinates known to be problematic.
 local function IsSuspiciousMapEdge(x, y)
-    -- TrinityCore maps use a coordinate system centered on (0,0).
+    -- Core maps use a coordinate system centered on (0,0).
     -- The maximum valid range is roughly ±17066.  Flag anything beyond ±16500.
     local EDGE_THRESHOLD = 16500
     return math.abs(x) > EDGE_THRESHOLD or math.abs(y) > EDGE_THRESHOLD
@@ -1011,7 +1011,7 @@ end)
 -- =============================================================================
 
 -- §14.1  Water Detection
--- TrinityCore's IsInWater() is exposed on units. For map points we must
+-- Core's IsInWater() is exposed on units. For map points we must
 -- infer water presence from the floor-Z vs liquid-Z difference.
 
 local LIQUID_TYPE_NONE  = 0
@@ -1200,7 +1200,7 @@ end
 -- =============================================================================
 --  §15  SPLINE PATH RECORDER
 --  For the highest quality movement, we pre-compute a multi-point spline
---  and feed it to TrinityCore's MoveSplinePath.  This avoids the single
+--  and feed it to Core's MoveSplinePath.  This avoids the single
 --  MoveTo() call and gives smoother pathing around obstacles.
 -- =============================================================================
 
@@ -1301,7 +1301,7 @@ end
 --  WotLK has several terrain flags that affect movement legality.
 -- =============================================================================
 
--- Terrain flags (matching TrinityCore's GridTerrainType enum subset)
+-- Terrain flags (matching Core's GridTerrainType enum subset)
 local TERRAIN_NORMAL   = 0
 local TERRAIN_WATER    = 1
 local TERRAIN_MAGMA    = 2
@@ -1359,7 +1359,7 @@ end
 -- =============================================================================
 --  §19  COMBAT ENGAGEMENT SYSTEM
 --  A charge must trigger melee combat engagement correctly.
---  TrinityCore handles this internally when a spell is cast, but since we
+--  Core handles this internally when a spell is cast, but since we
 --  are injecting movement, we verify that combat is entered.
 -- =============================================================================
 
@@ -1470,7 +1470,7 @@ end
 
 -- =============================================================================
 --  §21  CHARGE COOLDOWN ENFORCEMENT AT LUA LEVEL
---  TrinityCore manages cooldowns server-side, but we add a Lua-level guard
+--  Core manages cooldowns server-side, but we add a Lua-level guard
 --  as a second line of defense against rapid-cast exploits.
 -- =============================================================================
 
@@ -1737,9 +1737,9 @@ RegisterServerEvent(1, OnElunaClear)
 
   TESTED ON
   ---------
-  • TrinityCore 3.3.5a (commit ~2024-era builds)
+  • Core 3.3.5a (commit ~2024-era builds)
   • Eluna 3.x and Eluna 4.x
-  • AzerothCore 3.3.5a (minor API name differences; pcall guards handle them)
+  • Core 3.3.5a (minor API name differences; pcall guards handle them)
 
   INSTALLATION
   ------------
